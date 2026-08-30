@@ -230,6 +230,11 @@ input:focus, textarea:focus {
   color: #34d399;
   border-color: rgba(16, 185, 129, 0.3);
 }
+.pill-warning {
+  background: rgba(245, 158, 11, 0.12);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.3);
+}
 
 .report-section {
   background: #111827;
@@ -518,13 +523,14 @@ async function loadLatestSavedProfile() {
 
 function renderPills(items, type = 'normal') {
   if (!items || !items.length) return '<span style="color:var(--text-muted);font-size:13px;">None specified</span>';
-  const cls = type === 'danger' ? 'pill-danger' : (type === 'purple' ? 'pill-purple' : (type === 'success' ? 'pill-success' : 'pill'));
-  return items.map(item => `<span class="${cls}">${esc(item)}</span>`).join('');
+  const colorCls = type === 'danger' ? 'pill-danger' : (type === 'purple' ? 'pill-purple' : (type === 'success' ? 'pill-success' : (type === 'warning' ? 'pill-warning' : '')));
+  return items.map(item => `<span class="pill ${colorCls}">${esc(item)}</span>`).join('');
 }
 
 function renderDashboard(data, profile) {
   const root = document.getElementById('output');
   const yt = data.yt_client_json || {};
+  const comp = yt.company_overview || {};
   const vRep = data.verification_report || {};
   const healthScore = data.evidence_health_score || 100;
   const scoreClass = healthScore >= 80 ? 'score-high' : (healthScore >= 50 ? 'score-med' : 'score-low');
@@ -538,7 +544,7 @@ function renderDashboard(data, profile) {
             <span class="badge" style="background:var(--primary);color:#fff;">VIRALYST READY</span>
             <span class="badge badge-cat">${esc(yt.industry || 'Business')}</span>
           </div>
-          <h2 style="font-size:22px;margin:6px 0 4px;color:#fff;">${esc(yt.business_name || profile.client.name)}</h2>
+          <h2 style="font-size:22px;margin:6px 0 4px;color:#fff;">${esc(yt.company_name || yt.business_name || profile.client.name)}</h2>
           <div style="font-size:13.5px;color:#93c5fd;">
             ${yt.website ? `Official Website: <a href="${esc(yt.website)}" target="_blank" style="color:var(--accent);font-weight:600;">${esc(yt.website)}</a>` : 'Website: None'}
           </div>
@@ -575,18 +581,55 @@ function renderDashboard(data, profile) {
       </div>`;
   }
 
-  // STRUCTURED YT-SEARCHER REPORT CARDS
+  // 1. COMPANY & BUSINESS DETAILS CARD
   html += `
     <div class="card">
-      <h3 style="margin:0 0 16px;font-size:17px;color:#fff;border-bottom:1px solid var(--border);padding-bottom:8px;">
-        📦 YT-Searcher Retrieval Profile (Generated as per <a href="https://github.com/Arjun-Chandra-7/YT-Searcher" target="_blank" style="color:var(--accent);">YT-Searcher</a> Contract)
+      <h3 style="margin:0 0 16px;font-size:17px;color:#fff;border-bottom:1px solid var(--border);padding-bottom:8px;display:flex;align-items:center;gap:8px;">
+        <span>🏢 Company Background & Leadership Details</span>
+      </h3>
+
+      <div class="grid-2">
+        <div class="report-section">
+          <div class="report-title">🏛️ Entity & Industry</div>
+          <div style="font-size:14px;color:#e5e7eb;line-height:1.6;">
+            <div><b>Legal Name:</b> ${esc(comp.legal_name || yt.business_name)}</div>
+            <div><b>Industry / Vertical:</b> ${esc(yt.industry || 'Technology & Commerce')}</div>
+            ${comp.headquarters ? `<div><b>Headquarters:</b> ${esc(comp.headquarters)}</div>` : ''}
+            ${comp.founding_details ? `<div><b>Founded:</b> ${esc(comp.founding_details)}</div>` : ''}
+          </div>
+        </div>
+
+        <div class="report-section">
+          <div class="report-title">👥 Founders & Key Leadership</div>
+          <div style="font-size:14px;color:#e5e7eb;line-height:1.6;">
+            <div><b>Founders:</b> ${esc(comp.founders || 'Documented in public registry')}</div>
+            ${comp.leadership ? `<div><b>Leadership / CEO:</b> ${esc(comp.leadership)}</div>` : ''}
+            ${comp.revenue_scale ? `<div><b>Scale / Revenue:</b> ${esc(comp.revenue_scale)}</div>` : ''}
+            <div><b>Business Model:</b> ${esc(comp.business_model || 'Subscription & commercial operations')}</div>
+          </div>
+        </div>
+      </div>
+
+      ${comp.executive_summary ? `
+        <div class="report-section" style="margin-bottom:0;">
+          <div class="report-title">📄 Executive Summary & Mission</div>
+          <div style="font-size:13.5px;color:#d1d5db;line-height:1.5;">${esc(comp.executive_summary)}</div>
+        </div>
+      ` : ''}
+    </div>`;
+
+  // 2. STRUCTURED YT-SEARCHER RETRIEVAL PROFILE CARD
+  html += `
+    <div class="card">
+      <h3 style="margin:0 0 16px;font-size:17px;color:#fff;border-bottom:1px solid var(--border);padding-bottom:8px;display:flex;align-items:center;gap:8px;">
+        <span>📦 YT-Searcher Retrieval Profile (Strict YT-Searcher Contract)</span>
       </h3>
 
       <div class="grid-2">
         <div class="report-section">
           <div class="report-title">🏷️ Niches & Subniches</div>
-          <div>${renderPills(yt.subniches)}</div>
-          <div style="font-size:12px;color:var(--text-muted);margin-top:6px;">Primary: <b>${esc(yt.primary_niche)}</b></div>
+          <div style="margin-bottom:8px;">${renderPills(yt.subniches)}</div>
+          <div style="font-size:12px;color:var(--text-muted);">Primary: <b style="color:#93c5fd;">${esc(yt.primary_niche)}</b></div>
         </div>
 
         <div class="report-section">
@@ -621,8 +664,8 @@ function renderDashboard(data, profile) {
 
       <div class="grid-2">
         <div class="report-section">
-          <div class="report-title">🪝 Messaging Hooks & Seed Keywords</div>
-          <div>${renderPills(yt.keywords)}</div>
+          <div class="report-title">🔑 Target Search Queries & Video Hooks</div>
+          <div>${renderPills(yt.keywords, 'warning')}</div>
         </div>
 
         <div class="report-section">
@@ -637,10 +680,10 @@ function renderDashboard(data, profile) {
       </div>
 
       ${yt.brand_positioning ? `
-        <div class="report-section">
+        <div class="report-section" style="margin-bottom:0;">
           <div class="report-title">✨ Brand Positioning & Tone</div>
-          <div style="font-size:13.5px;color:#e5e7eb;margin-bottom:4px;"><b>Positioning:</b> ${esc(yt.brand_positioning)}</div>
-          <div style="font-size:13.5px;color:#e5e7eb;"><b>Tone of Voice:</b> ${esc(yt.tone_of_voice || 'Direct & clear')}</div>
+          <div style="font-size:13.5px;color:#e5e7eb;margin-bottom:6px;"><b>Positioning:</b> ${esc(yt.brand_positioning)}</div>
+          <div style="font-size:13.5px;color:#e5e7eb;"><b>Tone of Voice:</b> ${esc(yt.tone_of_voice || 'Direct, authoritative & clear')}</div>
         </div>
       ` : ''}
     </div>`;

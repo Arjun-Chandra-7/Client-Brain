@@ -85,21 +85,39 @@ class YTExportService:
         if not exclusions and constraints:
             exclusions = [c for c in constraints if any(neg in c.lower() for neg in ("no ", "never ", "avoid ", "exclude ", "do not"))]
 
-        # Extract brand name
+        # Extract brand name and company details
         brand_name = client.business_name or client.name or identity.get("company_legal_name") or "client"
+        founders = grouped.get("founder", {}).get("founders") or ""
+        leadership = grouped.get("founder", {}).get("current_leadership_or_ceo") or ""
+        founding = identity.get("founding_details") or grouped.get("business", {}).get("founding_claim") or ""
+        headquarters = identity.get("headquarters") or ""
+        business_model = grouped.get("business", {}).get("business_model") or "Commercial delivery & digital operations"
+        revenue_scale = grouped.get("business", {}).get("revenue_scale") or grouped.get("business", {}).get("operational_scale") or ""
+        exec_summary = grouped.get("summary", {}).get("executive_summary") or grouped.get("summary", {}).get("website_description_claim") or ""
 
         from app.services.verification_service import FactVerificationService
         verification_report = FactVerificationService(self.db).run_full_verification(client.id, check_live_urls=False, update_timestamps=False).to_dict()
 
-        # Build clean YT-Searcher contract
+        # Build clean, complete YT-Searcher contract
         client_json: dict[str, Any] = {
             "client_id": client.id,
             "business_name": brand_name,
+            "company_name": identity.get("company_legal_name") or brand_name,
             "client_name": client.name,
-            "website": client.website,
+            "website": client.website or identity.get("official_website"),
             "industry": identity.get("industry") or niche.get("primary_niche") or "General Business",
             "primary_niche": niche.get("primary_niche") or identity.get("industry") or "General",
             "subniches": subniches,
+            "company_overview": {
+                "legal_name": identity.get("company_legal_name") or brand_name,
+                "founders": founders,
+                "leadership": leadership,
+                "founding_details": founding,
+                "headquarters": headquarters,
+                "business_model": business_model,
+                "revenue_scale": revenue_scale,
+                "executive_summary": exec_summary
+            },
             "products": products,
             "target_audience": target_audience,
             "audience_problems": pain_points,
@@ -111,7 +129,7 @@ class YTExportService:
             "creators": creators_list,
             "exclusions": exclusions,
             "languages": ["en"],
-            "geographies": _as_list(identity.get("operating_markets")) or ["US"],
+            "geographies": _as_list(identity.get("operating_markets")) or ["Global", "US"],
             "brand_positioning": brand.get("brand_positioning") or brand.get("unique_selling_proposition") or "",
             "tone_of_voice": brand.get("tone_of_voice") or brand.get("brand_personality") or "",
             "aspirations": goals,
