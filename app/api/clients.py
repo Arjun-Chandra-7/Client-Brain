@@ -5,7 +5,7 @@ from app.api.dependencies import client_or_404
 from app.api.serializers import fact_out, insight_out, source_out
 from app.db.session import get_db
 from app.models import Client, Constraint, Goal, SocialAccount, Source
-from app.schemas import BootstrapRequest, ClientCreate, FactCreate, InsightCreate, SourceCreate
+from app.schemas import BootstrapRequest, ClientCreate, ExportSaveRequest, FactCreate, InsightCreate, SourceCreate, VerificationRequest
 from app.services.client_service import ClientService
 from app.services.fact_service import FactService
 from app.services.insight_service import InsightService
@@ -85,3 +85,38 @@ def profile(client: Client = Depends(client_or_404), db: Session = Depends(get_d
             "facts": [fact_out(f) for f in all_facts], "insights": [insight_out(i) for i in InsightService(db).list(client.id)],
             "sources": [source_out(s) for s in db.scalars(select(Source).where(Source.client_id == client.id))],
             "missing_information": service.missing_information(client.id)}
+
+
+@router.post("/{client_id}/verify")
+def verify_client(payload: VerificationRequest = None, client: Client = Depends(client_or_404), db: Session = Depends(get_db)):
+    from app.services.verification_service import FactVerificationService
+    check_live = payload.check_live_urls if payload else True
+    report = FactVerificationService(db).run_full_verification(client.id, check_live_urls=check_live)
+    return report.to_dict()
+
+
+@router.get("/{client_id}/verification-report")
+def get_verification_report(client: Client = Depends(client_or_404), db: Session = Depends(get_db)):
+    from app.services.verification_service import FactVerificationService
+    report = FactVerificationService(db).run_full_verification(client.id, check_live_urls=False, update_timestamps=False)
+    return report.to_dict()
+
+
+@router.get("/{client_id}/client.json")
+@router.get("/{client_id}/export/yt-searcher")
+def export_yt_searcher(client: Client = Depends(client_or_404), db: Session = Depends(get_db)):
+    from app.services.export_service import YTExportService
+    return YTExportService(db).build_client_json(client.id)
+
+
+@router.post("/{client_id}/export/yt-searcher/save")
+def save_yt_searcher_json(payload: ExportSaveRequest = None, client: Client = Depends(client_or_404), db: Session = Depends(get_db)):
+    import json
+    from pathlib import Path
+    from app.services.export_service import YTExportService
+    client_json = YTExportService(db).build_client_json(client.id)
+    target_path = Path(payload.output_path) if (payload and payload.output_path) else Path("/home/xor_sensei/Dev/Viralyst/RAG/client.json")
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+    target_path.write_text(json.dumps(client_json, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return {"status": "saved", "path": str(target_path), "client_json": client_json}
+

@@ -10,7 +10,7 @@ app.include_router(clients.router); app.include_router(brain.router); app.includ
 
 @app.get("/", include_in_schema=False)
 def home():
-    return {"message": "Open /research/test to test Client Brain in a browser, or /docs for the API."}
+    return research.test_page()
 
 
 @app.get("/health")

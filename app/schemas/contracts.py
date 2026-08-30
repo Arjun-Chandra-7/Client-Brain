@@ -77,3 +77,12 @@ class QuestionAnswer(BaseModel):
     inferences: list[InsightOut]
     unknown: list[str]
     answer: str
+
+
+class ExportSaveRequest(BaseModel):
+    output_path: str | None = Field(default=None, description="Target file path to save client.json. Defaults to /home/xor_sensei/Dev/Viralyst/RAG/client.json")
+
+
+class VerificationRequest(BaseModel):
+    check_live_urls: bool = Field(default=True, description="Whether to ping live source URLs over HTTP")
+
