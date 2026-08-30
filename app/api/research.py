@@ -348,53 +348,57 @@ details summary {
 <!-- CLIENT INPUT & WEB CRAWL FORM -->
 <div class="card">
   <h2 style="font-size:16px;margin:0 0 14px;color:#f9fafb;display:flex;align-items:center;gap:8px;">
-    <span>📝 Enter Client Parameters & Pull Internet Intelligence</span>
+    <span>⚡ Client Intelligence Discovery & YT-Searcher Report</span>
   </h2>
   
   <div class="grid-2">
     <div class="form-group">
-      <label for="brand">Client / Brand Name *</label>
-      <input id="brand" placeholder="e.g. Alex Hormozi, Gymshark, Basecamp, Acme Fitness" value="Basecamp">
+      <label for="brand">Client / Brand Name * (Only required field)</label>
+      <input id="brand" placeholder="e.g. Alex Hormozi, Gymshark, Basecamp, Nike, Notion, Duolingo, Hubspot..." autofocus>
     </div>
     <div class="form-group">
-      <label for="website">Official Website URL (optional / recommended for crawling)</label>
-      <input id="website" placeholder="https://basecamp.com" value="https://basecamp.com">
-    </div>
-  </div>
-
-  <div class="grid-2">
-    <div class="form-group">
-      <label for="niche">Primary Niche / Market Category (optional)</label>
-      <input id="niche" placeholder="e.g. Project Management SaaS, B2B Growth, Fitness Coaching" value="Project Management SaaS">
-    </div>
-    <div class="form-group">
-      <label for="competitors">Known Competitors / Creator Seeds (comma separated)</label>
-      <input id="competitors" placeholder="e.g. Asana, Monday.com, ClickUp, Notion" value="Asana, Monday.com, Trello, Notion">
-    </div>
-  </div>
-
-  <div class="grid-2">
-    <div class="form-group">
-      <label for="goals">Client Goals & Target Outcomes (comma separated)</label>
-      <input id="goals" placeholder="e.g. Acquire agency leads, Drive YouTube Shorts engagement, Rank for calm work" value="Acquire B2B teams, Drive YouTube Shorts reach, Promote anti-burnout culture">
-    </div>
-    <div class="form-group">
-      <label for="constraints">Negative Exclusions & Constraints (comma separated)</label>
-      <input id="constraints" placeholder="e.g. No per-seat pricing, No complex enterprise bloat, Avoid spammy hooks" value="No per-seat pricing, Avoid enterprise complexity, No generic hustle porn">
+      <label for="website">Official Website URL (Optional — will auto-discover if blank)</label>
+      <input id="website" placeholder="e.g. https://example.com">
     </div>
   </div>
 
   <div class="form-group">
-    <label for="notes">Client Background / Notes / Pasted Documents / Context</label>
-    <textarea id="notes" rows="3" placeholder="Paste any client briefing docs, founder notes, specific product features, target audience descriptions, or messaging angles..."></textarea>
+    <label for="notes">Client Notes, Context or Background (Optional — paste anything you want to provide)</label>
+    <textarea id="notes" rows="2" placeholder="Any private briefing notes, specific offer angles, target audience focus, constraints, or links... (leave blank to let internet discovery do the work)"></textarea>
   </div>
 
-  <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:6px;">
+  <details style="margin-bottom:16px;background:#030712;border:1px solid #1f2937;">
+    <summary style="font-size:13px;color:#9ca3af;">+ Add Optional Details (Niche, Competitors, Goals, Exclusions)</summary>
+    <div style="margin-top:12px;">
+      <div class="grid-2">
+        <div class="form-group">
+          <label for="niche">Target Niche / Vertical (Optional)</label>
+          <input id="niche" placeholder="e.g. Fitness Coaching, B2B SaaS, Real Estate...">
+        </div>
+        <div class="form-group">
+          <label for="competitors">Known Competitors (Optional, comma-separated)</label>
+          <input id="competitors" placeholder="e.g. Competitor A, Competitor B...">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label for="goals">Goals & Desired Outcomes (Optional, comma-separated)</label>
+          <input id="goals" placeholder="e.g. Acquire agency leads, Drive YouTube Shorts reach...">
+        </div>
+        <div class="form-group">
+          <label for="constraints">Negative Exclusions & Safety Limits (Optional, comma-separated)</label>
+          <input id="constraints" placeholder="e.g. No get-rich-quick, No supplement reviews...">
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
     <button id="submitBtn" class="btn" onclick="generateReport()">
-      ⚡ Pull Web Intelligence & Generate YT-Searcher Report
+      ⚡ Pull Internet Intelligence & Curate YT-Searcher Report
     </button>
     <button class="btn btn-secondary" onclick="loadLatestSavedProfile()">
-      Load Latest Client from Database
+      Load Current Active Client
     </button>
   </div>
 </div>

@@ -493,156 +493,138 @@ class PublicWebResearchProvider(ResearchProvider):
             if absolute and any(platform in urlparse(absolute).netloc.lower() for platform in ("instagram.com", "youtube.com", "linkedin.com", "tiktok.com", "facebook.com", "x.com", "twitter.com")):
                 claims.append(ExtractedClaim("social_presence", "linked_official_social_profile", absolute, 0.88))
 
-        # 6. Full Text & Search Snippet Deep Claims
+        # 6. Full Text & Dynamic Internet Intelligence Extraction
         full_corpus = (visible_text + " " + html_page + " " + brand_hint).lower()
+        title_desc = f"{clean_text(parser.title)} {clean_text(parser.description)}"
 
-        # Domain/Niche classification
-        is_coffee = any(w in full_corpus for w in ["coffee", "roastery", "espresso", "cafe", "starbucks", "latte", "frappuccino"])
-        is_software = any(w in full_corpus for w in ["software", "saas", "project management", "basecamp", "app", "cloud", "collaboration", "developer", "platform", "tool"])
-        is_fitness = any(w in full_corpus for w in ["gymshark", "apparel", "fitness", "workout", "activewear", "gym"])
-        is_education = any(w in full_corpus for w in ["duolingo", "language", "learning", "education", "course"])
+        # Universal Dynamic Extraction for Any Entity
+        brand_clean = brand_hint or (clean_text(parser.title).split()[0] if parser.title else "Brand")
 
-        if is_coffee:
-            claims.append(ExtractedClaim("identity", "company_legal_name", "Starbucks Corporation", 0.95))
-            claims.append(ExtractedClaim("identity", "industry", "Specialty Coffee, Food & Beverage Retail, Hospitality", 0.95))
-            claims.append(ExtractedClaim("identity", "headquarters", "Seattle, Washington, United States", 0.92))
-            claims.append(ExtractedClaim("identity", "operating_markets", "Global presence across 80+ international markets and 35,000+ stores", 0.92))
-            claims.append(ExtractedClaim("identity", "founding_details", "Founded March 30, 1971 in Seattle, Washington (Pike Place Market)", 0.95))
-            claims.append(ExtractedClaim("founder", "founders", "Jerry Baldwin, Zev Siegl, and Gordon Bowker (with key expansion led by Howard Schultz)", 0.95))
-            claims.append(ExtractedClaim("founder", "current_leadership_or_ceo", "Brian Niccol (Chairman and CEO) / Executive Leadership", 0.92))
-            claims.append(ExtractedClaim("summary", "executive_summary", "Starbucks Corporation is the world's premier roaster, marketer, and retailer of specialty coffee, operating tens of thousands of coffeehouse locations worldwide.", 0.95))
-            claims.append(ExtractedClaim("summary", "core_mission_or_tagline", "To inspire and nurture the human spirit - one person, one cup, and one neighborhood at a time.", 0.92))
+        # 6.1 Identify Niche & Industry dynamically
+        inferred_industry = None
+        if "industry" in infobox:
+            inferred_industry = infobox["industry"]
+        elif parser.description and len(parser.description) > 10:
+            inferred_industry = clean_text(parser.description).split(".")[0]
+        elif parser.title:
+            inferred_industry = clean_text(parser.title).split("-")[-1].split("|")[-1].strip()
 
-            claims.append(ExtractedClaim("niche", "primary_niche", "Specialty Coffeehouse & Cafe Experience", 0.95))
-            claims.append(ExtractedClaim("niche", "sub_niches", ["Handcrafted Espresso & Cold Brew", "Specialty Teas & Refreshers", "Artisanal Bakery & Breakfast Food", "At-Home Packaged Coffee"], 0.9))
-            claims.append(ExtractedClaim("niche", "market_category", "Food & Beverage / Quick-Service Coffeehouse Retail", 0.95))
-            claims.append(ExtractedClaim("business", "business_model", "Operates company-owned retail locations, licensed retail partner stores, consumer packaged goods distribution, and mobile/digital ordering channels.", 0.88))
-            claims.append(ExtractedClaim("business", "revenue_streams", "Primary revenue generated from beverage sales, handcrafted food items, packaged coffee/tea, single-serve products, brand licensing, and store merchandise.", 0.88))
-            claims.append(ExtractedClaim("business", "distribution_channels", "Physical retail stores, drive-thrus, mobile app order-and-pay, third-party delivery aggregators, and grocery/retail partnerships.", 0.88))
-            claims.append(ExtractedClaim("business", "operational_scale", "Over 38,000+ stores worldwide across 80+ countries with $30B+ in annual revenue.", 0.9))
-            claims.append(ExtractedClaim("brand", "brand_positioning", "'The Third Place' - a welcoming, uplifting environment between work and home dedicated to human connection and coffee craft.", 0.9))
-            claims.append(ExtractedClaim("brand", "brand_personality", "Warm, contemporary, community-oriented, craft-conscious, and premium yet accessible.", 0.88))
-            claims.append(ExtractedClaim("brand", "tone_of_voice", "Inviting, sensory, passionate about quality and craft, socially responsible, and conversational.", 0.85))
-            claims.append(ExtractedClaim("brand", "communication_style", "Customer-centric storytelling celebrating seasonal moments, barista craftsmanship, ethical sourcing, and community.", 0.85))
-            claims.append(ExtractedClaim("brand", "unique_selling_proposition", "Everyday accessible luxury with personalized beverage customization, expansive global store footprint, and the high-engagement Starbucks Rewards loyalty ecosystem.", 0.9))
-            claims.append(ExtractedClaim("brand", "major_messaging_themes", ["Coffee craftsmanship & ethical sourcing", "Personalized beverage customization", "Seasonal menu traditions (e.g. Pumpkin Spice Latte, Holiday Cups)", "Community connection and sustainability"], 0.88))
+        industry_val = (inferred_industry[:120] if inferred_industry else f"{brand_clean} Industry & Commercial Solutions")
+        claims.append(ExtractedClaim("identity", "company_legal_name", brand_clean, 0.92))
+        claims.append(ExtractedClaim("identity", "industry", industry_val, 0.9))
+        claims.append(ExtractedClaim("niche", "primary_niche", industry_val, 0.88))
+        claims.append(ExtractedClaim("business", "business_model", "Commercial product delivery, services, and digital operations.", 0.85))
+        claims.append(ExtractedClaim("social_presence", "general_content_style", "Digital communications, educational content, and community updates.", 0.85))
 
-            claims.append(ExtractedClaim("audience", "primary_customer_segments", ["Daily Morning Commuters & Habitual Coffee Drinkers", "Working Professionals & Students seeking workspace/wifi", "Custom Beverage & Specialty Drink Enthusiasts", "On-the-go Mobile App & Drive-Thru Convenience Seekers"], 0.9))
-            claims.append(ExtractedClaim("audience", "demographics", "Urban and suburban consumers, students, young professionals, and families (ages 18-50), middle to upper-middle income bracket.", 0.85))
-            claims.append(ExtractedClaim("audience", "psychographics", "Values daily routines, convenience, customizable drink experiences, comfortable meeting spaces, and modern lifestyle branding.", 0.85))
-            claims.append(ExtractedClaim("audience", "customer_pain_points", ["Lack of time during busy morning rush", "Inconsistent coffee quality at generic fast-food chains", "Need for comfortable public workspace with reliable internet and seating"], 0.85))
-            claims.append(ExtractedClaim("audience", "customer_desires", ["Quick, high-quality customizable daily caffeine boost", "Comfortable meeting spot or quiet workspace", "Earnable loyalty rewards, discounts, and personalized promotions"], 0.85))
-            claims.append(ExtractedClaim("audience", "buying_triggers", ["Morning commute and wake-up routine", "Mid-afternoon energy slump / treat-yourself moment", "Seasonal product launches (e.g., PSL, holiday specials)", "Meeting up with friends or colleagues"], 0.88))
-            claims.append(ExtractedClaim("audience", "potential_objections", ["Premium pricing compared to budget convenience stores or home brewing", "Store congestion and long wait times during peak morning hours", "Complex customizations leading to order variance"], 0.82))
+        # 6.2 Extract Sub-niches from Headings & Text
+        subniches = []
+        for h in parser.headings:
+            h_clean = clean_text(h)
+            if 4 < len(h_clean) < 60 and not any(skip in h_clean.lower() for skip in ("menu", "login", "sign in", "cookie", "privacy", "copyright", "home", "about us")):
+                subniches.append(h_clean)
+        claims.append(ExtractedClaim("niche", "sub_niches", list(dict.fromkeys(subniches))[:6] if subniches else [f"{brand_clean} Solutions", "Industry Best Practices"], 0.85))
 
-            claims.append(ExtractedClaim("offers", "flagship_lines", ["Espresso & Caffe Latte / Americano", "Frappuccino Blended Beverages", "Cold Brew & Nitro Cold Brew", "Starbucks Refreshers & Iced Teas", "Warm Breakfast Sandwiches & Pastries", "Starbucks At Home Whole Bean & Ground Coffee"], 0.95))
-            claims.append(ExtractedClaim("offers", "product_categories", "Handcrafted Hot & Iced Beverages, Food/Pastries, Whole Bean Coffee, and Branded Merchandise", 0.92))
-            claims.append(ExtractedClaim("offers", "pricing_strategy", "Premium accessible pricing tiered by customized size (Tall, Grande, Venti, Trenta) with paid add-ons for syrups, dairy alternatives, and extra shots.", 0.88))
-            claims.append(ExtractedClaim("offers", "loyalty_and_perks", "Starbucks Rewards program offering Star collection for free food/drinks, birthday rewards, and mobile order & pay perks.", 0.92))
-            claims.append(ExtractedClaim("offers", "offer_value_delivered", "Provides consistent, highly customizable premium beverages and quick-service food in an inviting third-place cafe environment or via rapid drive-thru/mobile pickup.", 0.9))
+        # 6.3 Extract Products & Core Features dynamically
+        extracted_products = []
+        if "products" in infobox:
+            raw_prods = [p.strip() for p in infobox["products"].split(",") if p.strip()]
+            extracted_products.extend(raw_prods)
+        for h in parser.headings:
+            h_clean = clean_text(h)
+            if any(term in h_clean.lower() for term in ("plan", "tier", "suite", "app", "service", "platform", "solution", "feature", "course", "book", "tool")):
+                if 4 < len(h_clean) < 70:
+                    extracted_products.append(h_clean)
+        claims.append(ExtractedClaim("offers", "flagship_lines", list(dict.fromkeys(extracted_products))[:6] if extracted_products else [f"{brand_clean} Core Offer"], 0.88))
+        claims.append(ExtractedClaim("offers", "product_categories", list(dict.fromkeys(extracted_products))[:6] if extracted_products else [f"{brand_clean} Offerings"], 0.88))
 
-            claims.append(ExtractedClaim("competitors", "direct_competitors", ["Dunkin'", "Costa Coffee", "Peet's Coffee", "Tim Hortons", "McCafé (McDonald's)"], 0.92))
-            claims.append(ExtractedClaim("competitors", "indirect_competitors", ["Local independent specialty cafes and third-wave roasters", "Convenience store coffee (7-Eleven, Wawa)", "Home espresso and single-serve pod machines (Nespresso, Keurig)"], 0.88))
-            claims.append(ExtractedClaim("competitors", "competition_dynamics", "Dunkin' and McCafé compete primarily on lower price and fast-food speed; independent third-wave roasters compete on artisan single-origin coffee quality; home machines compete on cost-per-cup convenience.", 0.9))
+        # 6.4 Extract Target Audience & Personas dynamically
+        audience_segments = []
+        audience_keywords = [
+            ("founder", "Founders & Business Owners"),
+            ("creator", "Content Creators & Influencers"),
+            ("agency", "Digital Agencies & Service Providers"),
+            ("team", "Collaborative Teams & Organizations"),
+            ("developer", "Software Engineers & Technical Leads"),
+            ("marketer", "Marketing & Growth Professionals"),
+            ("student", "Students & Lifelong Learners"),
+            ("coach", "Coaches, Consultants & Educators"),
+            ("consumer", "Everyday Consumers & Enthusiasts"),
+            ("fitness", "Athletes & Fitness Enthusiasts"),
+            ("enterprise", "Enterprise Leaders & Decision Makers")
+        ]
+        for kw, seg in audience_keywords:
+            if kw in full_corpus:
+                audience_segments.append(seg)
+        if not audience_segments:
+            audience_segments = ["Target Market Consumers", "Professional and Business Buyers"]
+        claims.append(ExtractedClaim("audience", "primary_customer_segments", list(dict.fromkeys(audience_segments))[:5], 0.88))
 
-            claims.append(ExtractedClaim("marketing_intelligence", "content_pillars", [
-                "1. Beverage Customization & 'Secret Menu' creations",
-                "2. Seasonal Menu Excitement & Anticipation campaigns",
-                "3. Behind-the-Bar Barista Craft & Coffee Origin storytelling",
-                "4. Customer Community Moments & 'Third Place' lifestyle"
-            ], 0.9))
-            claims.append(ExtractedClaim("marketing_intelligence", "customer_angles", [
-                "'Fuel your daily grind with a personalized brew'",
-                "'Your afternoon treat-yourself moment'",
-                "'A cozy space to work, connect, or unwind'",
-                "'Seasonal favorites are back for a limited time'"
-            ], 0.88))
-            claims.append(ExtractedClaim("marketing_intelligence", "authoritative_topics", ["Espresso extraction & coffee bean origins", "Ethical sourcing (C.A.F.E. Practices)", "Cafe culture & hospitality", "Custom drink creation & mixology"], 0.88))
-            claims.append(ExtractedClaim("marketing_intelligence", "messaging_hooks", [
-                "'What your go-to Starbucks order reveals about your day'",
-                "'How to customize your iced espresso for the perfect midday lift'",
-                "'From high-elevation farms to your morning cup: the journey of our roast'"
-            ], 0.85))
-            claims.append(ExtractedClaim("marketing_intelligence", "positioning_opportunities", "Expand ready-to-drink cold beverage innovations, enhance hyper-personalized rewards in the mobile app, and emphasize ethical farming sustainability narratives.", 0.85))
+        # 6.5 Extract Problems & Customer Pain Points dynamically
+        pain_points = []
+        pain_triggers = [
+            ("scattered", "Scattered discussions and fragmented workflows across multiple tools"),
+            ("waste time", "Wasting hours on repetitive manual administrative tasks"),
+            ("burnout", "Overwhelmed by high stress, burnout, and chaotic communication"),
+            ("expensive", "High recurring software subscription costs and per-user fees"),
+            ("missed", "Missed deadlines and lack of accountability across deliverables"),
+            ("confusing", "Complex, bloated interfaces that steepen the learning curve"),
+            ("slow", "Slow execution and delayed feedback cycles"),
+            ("inconsistent", "Inconsistent results and lack of structured systems")
+        ]
+        for trigger, desc in pain_triggers:
+            if trigger in full_corpus:
+                pain_points.append(desc)
+        if not pain_points:
+            pain_points = [
+                f"Inefficient workflows and lack of specialized tools in {inferred_industry or 'the market'}",
+                "Time lost navigating fragmented alternatives and legacy solutions",
+                "High costs associated with disjointed, complex platforms"
+            ]
+        claims.append(ExtractedClaim("audience", "customer_pain_points", pain_points[:4], 0.85))
 
-            claims.append(ExtractedClaim("social_presence", "platforms_found", ["Instagram", "TikTok", "X (Twitter)", "YouTube", "Facebook", "LinkedIn"], 0.92))
-            claims.append(ExtractedClaim("social_presence", "content_types_published", "High-aesthetic photography, vertical short-form reels/TikToks of drink assembly, seasonal announcement teasers, and interactive community polls.", 0.88))
-            claims.append(ExtractedClaim("social_presence", "recurring_content_themes", ["Seasonal cup design reveals", "Drink customization tutorials", "Barista appreciation spotlights", "Sustainability and cup recycling initiatives"], 0.88))
-            claims.append(ExtractedClaim("social_presence", "general_content_style", "Vibrant, visually inviting, relatable, trend-aware, and centered on sensory beverage aesthetics.", 0.88))
-            claims.append(ExtractedClaim("social_presence", "marketing_patterns", "Viral product hype on TikTok, limited-edition merchandise drops (tumblers/cups), and app-exclusive double star days.", 0.9))
+        # 6.6 Extract Competitors from Search Snippets & Text
+        competitors_found = []
+        comp_matches = re.findall(r'(?:vs\.?|versus|alternative to|competitor(?:s)?(?: to)?)\s+([A-Z][A-Za-z0-9\s&]+)', visible_text + " " + html_page)
+        for m in comp_matches:
+            c_cand = clean_text(m).split()[0].strip()
+            if 2 < len(c_cand) < 25 and c_cand.lower() not in (brand_hint.lower(), "the", "and", "our", "their", "all"):
+                competitors_found.append(c_cand)
+        if not competitors_found:
+            competitors_found = [f"Direct Market Competitors in {industry_val}"]
+        claims.append(ExtractedClaim("competitors", "direct_competitors", list(dict.fromkeys(competitors_found))[:6], 0.85))
 
-        elif is_software:
-            claims.append(ExtractedClaim("niche", "primary_niche", "Team Collaboration, Project Management & Productivity Software", 0.92))
-            claims.append(ExtractedClaim("niche", "sub_niches", ["Task & Milestone Tracking", "Centralized Team Communication", "Remote Work Collaboration", "Client Project Management"], 0.88))
-            claims.append(ExtractedClaim("niche", "market_category", "B2B SaaS / Work Management Software", 0.92))
-            claims.append(ExtractedClaim("identity", "company_legal_name", "37signals LLC / Basecamp", 0.92))
-            claims.append(ExtractedClaim("identity", "industry", "Productivity Software / Work Management SaaS", 0.92))
-            claims.append(ExtractedClaim("identity", "headquarters", "Chicago, Illinois, United States", 0.88))
-            claims.append(ExtractedClaim("identity", "operating_markets", "Global software customer base across 100+ countries", 0.88))
-            claims.append(ExtractedClaim("founder", "founders", "Jason Fried, Carlos Segura, and Ernest Kim (with David Heinemeier Hansson)", 0.92))
-            claims.append(ExtractedClaim("founder", "current_leadership_or_ceo", "Jason Fried (CEO) and David Heinemeier Hansson (CTO)", 0.92))
-            claims.append(ExtractedClaim("summary", "executive_summary", "Basecamp (by 37signals) is an all-in-one team collaboration and project management software platform designed to bring calm organization to teams.", 0.92))
-            claims.append(ExtractedClaim("summary", "core_mission_or_tagline", "The calm, organized way to manage projects, work with clients, and communicate company-wide.", 0.88))
-            claims.append(ExtractedClaim("business", "business_model", "Subscription-based Software-as-a-Service (SaaS) model with flat-rate or per-user monthly/annual pricing plans.", 0.88))
-            claims.append(ExtractedClaim("business", "revenue_streams", "Recurring monthly and annual software subscription fees, enterprise licenses, and add-on services.", 0.88))
-            claims.append(ExtractedClaim("business", "distribution_channels", "Direct self-serve digital checkout via website, web application, desktop app, and mobile iOS/Android app stores.", 0.88))
-            claims.append(ExtractedClaim("business", "operational_scale", "Millions of active users and teams worldwide across thousands of paying organizations.", 0.88))
-            claims.append(ExtractedClaim("brand", "brand_positioning", "The calm, organized all-in-one alternative to fragmented software chaos for productive teams.", 0.88))
-            claims.append(ExtractedClaim("brand", "brand_personality", "Pragmatic, opinionated, transparent, calm, and focused on simplicity.", 0.85))
-            claims.append(ExtractedClaim("brand", "tone_of_voice", "Direct, candid, clear, empathetic to workplace frustrations, and anti-complexity.", 0.85))
-            claims.append(ExtractedClaim("brand", "unique_selling_proposition", "All essential project management and team communication tools unified in one straightforward system with predictable pricing.", 0.88))
-            claims.append(ExtractedClaim("brand", "major_messaging_themes", ["Calm company culture & anti-burnout", "Eliminating tool fragmentation", "Straightforward predictable pricing", "Focus on real work over administrative overhead"], 0.85))
+        # 6.7 Dynamic Content Pillars & Actionable Angles
+        brand_clean = brand_hint or (clean_text(parser.title).split()[0] if parser.title else "Brand")
+        content_pillars = [
+            f"1. {brand_clean} Product Deep-Dives & Workflow Tutorials",
+            f"2. Industry Insights & Tactical Teardowns in {inferred_industry or 'the Space'}",
+            "3. Overcoming Real Customer Roadblocks & Case Studies",
+            "4. Best Practices, Anti-Patterns & Expert Frameworks"
+        ]
+        claims.append(ExtractedClaim("marketing_intelligence", "content_pillars", content_pillars, 0.88))
 
-            claims.append(ExtractedClaim("audience", "primary_customer_segments", ["Small to Medium Business Teams", "Remote & Distributed Organizations", "Creative, Marketing, & Development Agencies", "Freelancers and Independent Consultants"], 0.88))
-            claims.append(ExtractedClaim("audience", "demographics", "Team leaders, founders, agency owners, project managers, and knowledge workers (ages 25-55) globally.", 0.85))
-            claims.append(ExtractedClaim("audience", "psychographics", "Values calmness, operational clarity, straightforward communication, time management, and sustainable work practices.", 0.85))
-            claims.append(ExtractedClaim("audience", "customer_pain_points", ["Scattered discussions across endless chat channels and email threads", "Missed project deadlines and unclear responsibilities", "Paying for dozens of overlapping expensive software subscriptions"], 0.88))
-            claims.append(ExtractedClaim("audience", "customer_desires", ["One centralized home for all project assets, to-dos, and updates", "Clear visibility into team progress without micromanagement", "Lower software costs and faster onboarding"], 0.88))
-            claims.append(ExtractedClaim("audience", "buying_triggers", ["Team growth leading to communication breakdown", "Frustration with overly complex enterprise tools", "Start of a new major client project or company quarter"], 0.85))
-            claims.append(ExtractedClaim("audience", "potential_objections", ["Lack of niche customization compared to hyper-complex enterprise tools", "Switching costs and team migration effort from existing tools"], 0.82))
+        topics = [
+            f"{brand_clean} core methodologies",
+            f"Industry trends in {inferred_industry or 'modern business'}",
+            "Operational efficiency and execution frameworks",
+            "Customer transformation and results"
+        ]
+        claims.append(ExtractedClaim("marketing_intelligence", "authoritative_topics", topics, 0.85))
 
-            claims.append(ExtractedClaim("offers", "flagship_lines", ["Core Project Management & To-Do Tracking", "Message Boards & Group Chat", "Shared Document & Asset Storage", "Automated Team Check-ins & Schedules"], 0.9))
-            claims.append(ExtractedClaim("offers", "pricing_strategy", "Transparent fixed monthly pricing plans with free trial periods and no hidden setup fees.", 0.88))
-            claims.append(ExtractedClaim("offers", "loyalty_and_perks", "Free trial, unlimited projects on premium tiers, and complimentary customer onboarding support.", 0.85))
-            claims.append(ExtractedClaim("offers", "offer_value_delivered", "Consolidates project management, task lists, team messaging, and file sharing into a single intuitive hub.", 0.88))
+        hooks = [
+            f"'Why standard approaches to {inferred_industry or 'this industry'} fail (and what works)'",
+            f"'How {brand_clean} simplifies complex workflows in minutes'",
+            "'The biggest mistakes teams make before upgrading their systems'"
+        ]
+        claims.append(ExtractedClaim("marketing_intelligence", "messaging_hooks", hooks, 0.85))
 
-            claims.append(ExtractedClaim("competitors", "direct_competitors", ["Asana", "Monday.com", "Trello", "ClickUp", "Jira", "Notion"], 0.92))
-            claims.append(ExtractedClaim("competitors", "indirect_competitors", ["Slack + Google Docs suite", "Microsoft Teams + Planner", "Email and spreadsheets"], 0.88))
-            claims.append(ExtractedClaim("competitors", "competition_dynamics", "Competes against complex enterprise tools (Jira/Asana) by emphasizing simplicity and calm workflows; competes against standalone chat apps by integrating task management.", 0.9))
-
-            claims.append(ExtractedClaim("marketing_intelligence", "content_pillars", [
-                "1. Remote Work & Calm Company Culture philosophies",
-                "2. Project Organization & Workflow teardowns",
-                "3. Opinionated Software Design & Anti-Complexity",
-                "4. Customer Agency & Team Success Stories"
-            ], 0.88))
-            claims.append(ExtractedClaim("marketing_intelligence", "customer_angles", [
-                "'Stop losing files and chats across 5 different apps'",
-                "'The calm way to manage projects without burnout'",
-                "'Predictable flat pricing that doesn't penalize you for hiring'"
-            ], 0.85))
-            claims.append(ExtractedClaim("marketing_intelligence", "authoritative_topics", ["Remote collaboration", "Bootstrapping & sustainable business", "Calm work practices", "Productivity design"], 0.88))
-            claims.append(ExtractedClaim("marketing_intelligence", "messaging_hooks", [
-                "'Why your team feels overwhelmed (and how to fix your tools)'",
-                "'The real cost of app sprawl in 2026'",
-                "'How we run projects without daily status meetings'"
-            ], 0.85))
-            claims.append(ExtractedClaim("marketing_intelligence", "positioning_opportunities", "Position directly against per-user seat pricing hikes from enterprise software conglomerates and champion calm, anti-burnout remote work culture.", 0.85))
-
-            claims.append(ExtractedClaim("social_presence", "platforms_found", ["X (Twitter)", "LinkedIn", "YouTube", "GitHub"], 0.88))
-            claims.append(ExtractedClaim("social_presence", "content_types_published", "Thought leadership essays, founder podcasts, product walkthrough videos, and engineering blog posts.", 0.85))
-            claims.append(ExtractedClaim("social_presence", "recurring_content_themes", ["Calm work culture", "Software craftsmanship", "Bootstrapped business philosophy"], 0.85))
-
+        # 6.8 Brand Positioning & Tone
+        if parser.description:
+            claims.append(ExtractedClaim("brand", "brand_positioning", clean_text(parser.description)[:200], 0.88))
+            claims.append(ExtractedClaim("brand", "tone_of_voice", "Authoritative, clear, value-driven, and focused on practical outcomes.", 0.85))
         else:
-            # Universal structured fallback for any commercial entity
-            claims.append(ExtractedClaim("niche", "primary_niche", "Commercial Enterprise & Specialized Consumer Products/Services", 0.8))
-            claims.append(ExtractedClaim("niche", "market_category", "Commerce & Industry Services", 0.8))
-            claims.append(ExtractedClaim("business", "business_model", "Direct customer delivery and commercial trade operations.", 0.8))
-            claims.append(ExtractedClaim("business", "distribution_channels", "Digital web channels, physical facilities, and direct customer communication.", 0.8))
-            claims.append(ExtractedClaim("brand", "brand_positioning", "Customer-focused solutions engineered for reliability, quality, and domain expertise.", 0.8))
-            claims.append(ExtractedClaim("audience", "primary_customer_segments", ["Active Market Consumers", "Professional and Business Buyers"], 0.8))
-            claims.append(ExtractedClaim("offers", "offer_value_delivered", "Delivers dedicated domain solutions and products tailored to customer requirements.", 0.8))
-            claims.append(ExtractedClaim("marketing_intelligence", "content_pillars", ["1. Product Capabilities & Value", "2. Customer Outcomes", "3. Industry Insight"], 0.8))
+            claims.append(ExtractedClaim("brand", "brand_positioning", f"Dedicated solutions engineered for {inferred_industry or 'quality and performance'}.", 0.8))
+            claims.append(ExtractedClaim("brand", "tone_of_voice", "Professional, direct, engaging, and outcome-oriented.", 0.8))
 
         # Deduplicate claims
         unique_claims = {}
