@@ -68,8 +68,14 @@ class AskRequest(BaseModel):
 class BrandAnalysisRequest(BaseModel):
     brand_name: str = Field(min_length=2, max_length=255)
     website: str | None = None
+    niche: str | None = None
     notes: str | None = None
-    max_pages: int = Field(default=6, ge=1, le=12)
+    goals: list[str] = Field(default_factory=list)
+    constraints: list[str] = Field(default_factory=list)
+    competitors: list[str] = Field(default_factory=list)
+    social_links: list[str] = Field(default_factory=list)
+    documents: list[str] = Field(default_factory=list)
+    max_pages: int = Field(default=8, ge=1, le=16)
 
 
 class QuestionAnswer(BaseModel):

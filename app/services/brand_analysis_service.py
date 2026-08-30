@@ -17,9 +17,36 @@ class BrandAnalysisService:
 
     def analyze(self, payload: BrandAnalysisRequest) -> dict:
         client = self.clients.create(ClientCreate(name=payload.brand_name, business_name=payload.brand_name, website=payload.website))
-        if payload.notes:
-            self.clients.bootstrap(client, BootstrapRequest(name=payload.brand_name, business_name=payload.brand_name, website=payload.website, notes=payload.notes))
 
+        # 1. Ingest all user-provided context & parameters
+        has_client_info = any([payload.notes, payload.niche, payload.goals, payload.constraints, payload.social_links, payload.documents])
+        if has_client_info:
+            self.clients.bootstrap(client, BootstrapRequest(
+                name=payload.brand_name,
+                business_name=payload.brand_name,
+                website=payload.website,
+                niche=payload.niche,
+                notes=payload.notes,
+                goals=payload.goals,
+                constraints=payload.constraints,
+                social_links=payload.social_links,
+                documents=payload.documents
+            ))
+
+        if payload.competitors:
+            comp_source = Source(client_id=client.id, source_type=SourceType.CLIENT_INPUT, title="User-provided competitor seeds")
+            self.db.add(comp_source)
+            self.db.flush()
+            self.facts.add(client, FactCreate(
+                category="competitors",
+                key="direct_competitors",
+                value=payload.competitors,
+                fact_type="client_provided",
+                confidence=0.95,
+                source_ids=[comp_source.id]
+            ))
+
+        # 2. Pull live information from internet (official site, subpages, Wikipedia, search)
         collected = self.provider.discover_brand(payload.brand_name, payload.website, payload.max_pages)
 
         # Update client official website if discovered
@@ -57,9 +84,13 @@ class BrandAnalysisService:
         self.db.commit()
         insights_count = self._generate_evidence_insights(client)
 
-        # Run integrated fact check and verification audit automatically
+        # 3. Run integrated fact check and verification audit automatically
         from app.services.verification_service import FactVerificationService
         verification_report = FactVerificationService(self.db).run_full_verification(client.id, check_live_urls=False, update_timestamps=True)
+
+        # 4. Build the structured YT-Searcher report / client.json
+        from app.services.export_service import YTExportService
+        yt_client_json = YTExportService(self.db).build_client_json(client.id)
 
         return {
             "client": client,
@@ -68,8 +99,9 @@ class BrandAnalysisService:
             "insights_generated": insights_count,
             "verification_report": verification_report.to_dict(),
             "evidence_health_score": round(verification_report.overall_health_score, 1),
+            "yt_client_json": yt_client_json,
             "research_status": "completed" if extracted_count > 0 else "no_meaningful_information_extracted",
-            "research_message": "Public brand research completed successfully with source-backed facts and separate inferences." if extracted_count > 0 else "No meaningful public claims could be extracted. Check outbound network access, the official website, or provide client documents; no research facts were invented.",
+            "research_message": "Client intelligence pulled and combined with web evidence. Structured YT-Searcher report ready." if extracted_count > 0 else "Client record created with provided information. (Web discovery had limited results).",
             "profile_url": f"/clients/{client.id}/profile"
         }
 
