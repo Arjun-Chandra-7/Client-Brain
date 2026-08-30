@@ -74,7 +74,9 @@ def profile(client: Client = Depends(client_or_404), db: Session = Depends(get_d
     all_facts = fact_service.active(client.id)
     grouped = {}
     for fact in all_facts: grouped.setdefault(fact.category, []).append(fact_out(fact))
+    from app.services.verification_service import FactVerificationService
     service = ClientService(db)
+    verification_report = FactVerificationService(db).run_full_verification(client.id, check_live_urls=False, update_timestamps=False).to_dict()
     return {"client": client_out(client), "identity": grouped.get("identity", []), "business": grouped.get("business", []),
             "founder": grouped.get("founder", []) + grouped.get("key_people", []), "niche": grouped.get("niche", []), "offers": grouped.get("offers", []),
             "audience": grouped.get("audience", []), "brand": grouped.get("brand", []) + grouped.get("positioning", []),
@@ -84,7 +86,9 @@ def profile(client: Client = Depends(client_or_404), db: Session = Depends(get_d
             "constraints": [c.statement for c in db.scalars(select(Constraint).where(Constraint.client_id == client.id))],
             "facts": [fact_out(f) for f in all_facts], "insights": [insight_out(i) for i in InsightService(db).list(client.id)],
             "sources": [source_out(s) for s in db.scalars(select(Source).where(Source.client_id == client.id))],
-            "missing_information": service.missing_information(client.id)}
+            "missing_information": service.missing_information(client.id),
+            "evidence_health_score": verification_report.get("overall_health_score", 100.0),
+            "verification_report": verification_report}
 
 
 @router.post("/{client_id}/verify")

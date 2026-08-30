@@ -88,6 +88,9 @@ class YTExportService:
         # Extract brand name
         brand_name = client.business_name or client.name or identity.get("company_legal_name") or "client"
 
+        from app.services.verification_service import FactVerificationService
+        verification_report = FactVerificationService(self.db).run_full_verification(client.id, check_live_urls=False, update_timestamps=False).to_dict()
+
         # Build clean YT-Searcher contract
         client_json: dict[str, Any] = {
             "client_id": client.id,
@@ -117,7 +120,11 @@ class YTExportService:
             "social_links": socials,
             "_viralyst_metadata": {
                 "source_system": "VIRALYST_Client_Brain_V1",
+                "evidence_health_score": verification_report.get("overall_health_score", 100.0),
                 "total_verified_facts": len(active_facts),
+                "grounded_facts": verification_report.get("summary", {}).get("grounded_facts", len(active_facts)),
+                "conflicts_count": verification_report.get("summary", {}).get("conflicts_count", 0),
+                "verified_at": verification_report.get("verified_at"),
                 "generated_at": client.updated_at.isoformat() if client.updated_at else None,
                 "handoff_target": "https://github.com/Arjun-Chandra-7/YT-Searcher"
             }

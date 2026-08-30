@@ -600,21 +600,47 @@ function renderProfileView(profile, analysis) {
   const root = document.getElementById('report');
   const getInf = cat => (profile.insights || []).filter(i => i.category === cat);
   const sw = (profile.insights || []).filter(i => ['strengths', 'weaknesses', 'opportunities'].includes(i.category));
+  const vRep = profile.verification_report || analysis.verification_report;
+  const healthScore = profile.evidence_health_score ?? analysis.evidence_health_score ?? 100;
+  const scoreClass = healthScore >= 80 ? 'score-high' : (healthScore >= 50 ? 'score-med' : 'score-low');
 
   let html = `
     <div class="card" style="background:linear-gradient(135deg, rgba(15,98,254,0.15), rgba(168,85,247,0.15));border-color:var(--accent);">
-      <h2 style="border:none;margin-bottom:8px;padding:0;">Client: ${esc(profile.client.name)}</h2>
-      <div style="font-size:14px;color:#93c5fd;margin-bottom:12px;">
-        ${profile.client.website ? `Official Website: <a href="${esc(profile.client.website)}" target="_blank" style="font-weight:600;color:var(--accent);">${esc(profile.client.website)}</a>` : 'Website: Not established'}
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+        <div>
+          <h2 style="border:none;margin-bottom:6px;padding:0;">Client: ${esc(profile.client.name)}</h2>
+          <div style="font-size:14px;color:#93c5fd;margin-bottom:12px;">
+            ${profile.client.website ? `Official Website: <a href="${esc(profile.client.website)}" target="_blank" style="font-weight:600;color:var(--accent);">${esc(profile.client.website)}</a>` : 'Website: Not established'}
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text-muted);letter-spacing:0.5px;">Evidence Health Score</div>
+          <div class="score-circle" style="justify-content:flex-end;margin-top:2px;">
+            <span class="score-val ${scoreClass}" style="font-size:22px;padding:2px 10px;">${healthScore}/100</span>
+          </div>
+        </div>
       </div>
+
       <div class="meta-badges">
         <span class="badge" style="background:var(--primary);color:white;">Status: ${esc(analysis.research_status)}</span>
         <span class="badge" style="background:rgba(56,189,248,0.2);color:#38bdf8;">Sources: ${analysis.sources_collected}</span>
         <span class="badge" style="background:var(--success-bg);color:#4ade80;">Facts: ${analysis.facts_extracted}</span>
         <span class="badge" style="background:var(--purple-bg);color:#c084fc;">Inferences: ${analysis.insights_generated}</span>
+        ${vRep?.summary ? `<span class="badge ${vRep.summary.conflicts_count ? 'badge-weak' : 'badge-strong'}">Conflicts: ${vRep.summary.conflicts_count}</span>` : ''}
+        ${vRep?.summary ? `<span class="badge badge-strong">Grounded: ${vRep.summary.grounded_facts}/${vRep.summary.total_facts}</span>` : ''}
       </div>
       <p style="margin:12px 0 0;font-size:13.5px;color:#cbd5e1;">${esc(analysis.research_message)}</p>
     </div>`;
+
+  if (vRep?.conflicts_detected?.length) {
+    html += `
+      <div class="danger-box">
+        <b>⚠️ Integrated Fact-Checker Alert: Contradictory claims detected in evidence (${vRep.conflicts_detected.length}):</b>
+        <ul style="margin:6px 0 0 18px;padding:0;font-size:13px;">
+          ${vRep.conflicts_detected.map(c => `<li><b>${esc(c.category)}.${esc(c.key)}</b>: ${esc(c.message)}</li>`).join('')}
+        </ul>
+      </div>`;
+  }
 
   html += renderSection('Summary', profile.summary);
   html += renderSection('Identity', profile.identity);

@@ -39,7 +39,9 @@ class ClientService:
         self.db.commit()
         unavailable = [u for u in [payload.website, *payload.social_links] if u]
         missing = self.missing_information(client.id, research_unavailable=unavailable)
-        return {"client": client, "missing_information": missing, "research_status": "not_collected_no_research_provider" if unavailable else "not_requested"}
+        from app.services.verification_service import FactVerificationService
+        verification_report = FactVerificationService(self.db).run_full_verification(client.id, check_live_urls=False, update_timestamps=True).to_dict()
+        return {"client": client, "missing_information": missing, "research_status": "not_collected_no_research_provider" if unavailable else "not_requested", "verification_report": verification_report, "evidence_health_score": verification_report.get("overall_health_score", 100.0)}
 
     @staticmethod
     def _platform(url: str) -> str:

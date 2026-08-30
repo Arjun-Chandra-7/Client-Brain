@@ -57,11 +57,17 @@ class BrandAnalysisService:
         self.db.commit()
         insights_count = self._generate_evidence_insights(client)
 
+        # Run integrated fact check and verification audit automatically
+        from app.services.verification_service import FactVerificationService
+        verification_report = FactVerificationService(self.db).run_full_verification(client.id, check_live_urls=False, update_timestamps=True)
+
         return {
             "client": client,
             "sources_collected": len(collected),
             "facts_extracted": extracted_count,
             "insights_generated": insights_count,
+            "verification_report": verification_report.to_dict(),
+            "evidence_health_score": round(verification_report.overall_health_score, 1),
             "research_status": "completed" if extracted_count > 0 else "no_meaningful_information_extracted",
             "research_message": "Public brand research completed successfully with source-backed facts and separate inferences." if extracted_count > 0 else "No meaningful public claims could be extracted. Check outbound network access, the official website, or provide client documents; no research facts were invented.",
             "profile_url": f"/clients/{client.id}/profile"
