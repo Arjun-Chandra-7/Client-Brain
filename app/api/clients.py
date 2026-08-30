@@ -110,7 +110,7 @@ def get_verification_report(client: Client = Depends(client_or_404), db: Session
 @router.get("/{client_id}/export/yt-searcher")
 def export_yt_searcher(client: Client = Depends(client_or_404), db: Session = Depends(get_db)):
     from app.services.export_service import YTExportService
-    return YTExportService(db).build_client_json(client.id)
+    return YTExportService(db).export_and_save(client.id, output_dir="Client info")
 
 
 @router.post("/{client_id}/export/yt-searcher/save")
@@ -118,9 +118,16 @@ def save_yt_searcher_json(payload: ExportSaveRequest = None, client: Client = De
     import json
     from pathlib import Path
     from app.services.export_service import YTExportService
-    client_json = YTExportService(db).build_client_json(client.id)
-    target_path = Path(payload.output_path) if (payload and payload.output_path) else Path("/home/xor_sensei/Dev/Viralyst/RAG/client.json")
-    target_path.parent.mkdir(parents=True, exist_ok=True)
-    target_path.write_text(json.dumps(client_json, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    return {"status": "saved", "path": str(target_path), "client_json": client_json}
+    service = YTExportService(db)
+    client_json = service.build_client_json(client.id)
+    
+    if payload and payload.output_path:
+        target_path = Path(payload.output_path)
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+        target_path.write_text(json.dumps(client_json, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        saved_paths = {"custom_path": str(target_path)}
+    else:
+        saved_paths = service.save_client_info(client_json, output_dir="Client info")
+
+    return {"status": "saved", "saved_paths": saved_paths, "client_json": client_json}
 

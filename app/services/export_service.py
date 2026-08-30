@@ -149,3 +149,36 @@ class YTExportService:
         }
 
         return client_json
+
+    def export_and_save(self, client_id: str, output_dir: str = "Client info") -> dict[str, Any]:
+        data = self.build_client_json(client_id)
+        saved_paths = self.save_client_info(data, output_dir=output_dir)
+        data["_viralyst_saved_paths"] = saved_paths
+        return data
+
+    @staticmethod
+    def save_client_info(client_json: dict[str, Any], output_dir: str = "Client info") -> dict[str, str]:
+        import os
+        import json
+        import re
+
+        os.makedirs(output_dir, exist_ok=True)
+        brand_name = client_json.get("company_name") or client_json.get("business_name") or client_json.get("client_name") or "client"
+        safe_name = re.sub(r"[^a-zA-Z0-9_\- ]", "", brand_name).strip().replace(" ", "_")
+        if not safe_name:
+            safe_name = "client"
+
+        latest_path = os.path.join(output_dir, "client.json")
+        named_path = os.path.join(output_dir, f"{safe_name}.json")
+
+        with open(latest_path, "w", encoding="utf-8") as f:
+            json.dump(client_json, f, indent=2, ensure_ascii=False)
+
+        with open(named_path, "w", encoding="utf-8") as f:
+            json.dump(client_json, f, indent=2, ensure_ascii=False)
+
+        return {
+            "latest_file": latest_path,
+            "named_file": named_path,
+            "directory": output_dir
+        }

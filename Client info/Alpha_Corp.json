@@ -1,0 +1,62 @@
+{
+  "client_id": "eb67645d-e816-4bdc-a8b8-689e089c174a",
+  "business_name": "Alpha Corp",
+  "company_name": "Alpha Corp",
+  "client_name": "Alpha Corp",
+  "website": "https://alpha.com",
+  "industry": "fitness",
+  "primary_niche": "fitness",
+  "subniches": [
+    "calisthenics",
+    "gymnastics"
+  ],
+  "company_overview": {
+    "legal_name": "Alpha Corp",
+    "founders": "",
+    "leadership": "",
+    "founding_details": "",
+    "headquarters": "",
+    "business_model": "Commercial delivery & digital operations",
+    "revenue_scale": "",
+    "executive_summary": ""
+  },
+  "products": [
+    "Coaching Plan",
+    "App Subscription"
+  ],
+  "target_audience": [],
+  "audience_problems": [],
+  "pain_points": [],
+  "content_pillars": [
+    "Skill Tutorials",
+    "Diet Hacks"
+  ],
+  "topics": [],
+  "keywords": [],
+  "competitors": [],
+  "creators": [],
+  "exclusions": [],
+  "languages": [
+    "en"
+  ],
+  "geographies": [
+    "Global",
+    "US"
+  ],
+  "brand_positioning": "",
+  "tone_of_voice": "",
+  "aspirations": [],
+  "goals": [],
+  "constraints": [],
+  "social_links": [],
+  "_viralyst_metadata": {
+    "source_system": "VIRALYST_Client_Brain_V1",
+    "evidence_health_score": 40.0,
+    "total_verified_facts": 4,
+    "grounded_facts": 0,
+    "conflicts_count": 0,
+    "verified_at": "2026-08-30T17:24:57.104725+00:00",
+    "generated_at": "2026-08-30T17:24:57",
+    "handoff_target": "https://github.com/Arjun-Chandra-7/YT-Searcher"
+  }
+}

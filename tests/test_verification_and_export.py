@@ -85,3 +85,9 @@ def test_yt_searcher_export_endpoint(client, tmp_path):
     save_res = client.post(f"/clients/{cid}/export/yt-searcher/save", json={"output_path": str(save_target)})
     assert save_res.status_code == 200
     assert save_target.exists()
+
+    # Test default Client info folder save
+    default_save_res = client.post(f"/clients/{cid}/export/yt-searcher/save")
+    assert default_save_res.status_code == 200
+    assert Path("Client info/client.json").exists()
+    assert Path("Client info/Alpha_Corp.json").exists()

@@ -565,7 +565,11 @@ function renderDashboard(data, profile) {
         <span class="badge ${vRep.summary?.conflicts_count ? 'badge-weak' : 'badge-researched'}">Conflicts: ${vRep.summary?.conflicts_count || 0}</span>
       </div>
 
-      <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;">
+      <div style="margin-top:12px;padding:8px 12px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:6px;font-size:13px;color:#a7f3d0;display:flex;align-items:center;gap:8px;">
+        <span>📁 <b>Auto-Saved to Folder:</b> <code style="color:#34d399;font-weight:700;">Client info/client.json</code> &amp; <code style="color:#34d399;font-weight:700;">Client info/${esc((yt.company_name || yt.business_name || 'client').replace(/[^a-zA-Z0-9_ -]/g, '').trim().replace(/ /g, '_'))}.json</code></span>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
         <button class="btn btn-success" onclick="copyClientJson()">📋 Copy client.json</button>
         <button class="btn btn-secondary" onclick="downloadClientJson()">⬇️ Download client.json</button>
       </div>

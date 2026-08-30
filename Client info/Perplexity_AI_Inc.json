@@ -1,0 +1,104 @@
+{
+  "client_id": "d00f20ca-f2cc-4c20-834c-54c2b11c9662",
+  "business_name": "Perplexity",
+  "company_name": "Perplexity AI, Inc.",
+  "client_name": "Perplexity",
+  "website": "https://www.perplexity.ai/",
+  "industry": "Artificial intelligence, search engine",
+  "primary_niche": "Artificial intelligence, search engine",
+  "subniches": [
+    "AI-Powered Web Search & Information Retrieval",
+    "Citation-Backed Answer Synthesis",
+    "Pro Multi-Model Research (Claude 3.5 & GPT-4o)",
+    "Enterprise Knowledge Search & Analytics",
+    "Autonomous AI Web Browsers"
+  ],
+  "company_overview": {
+    "legal_name": "Perplexity AI, Inc.",
+    "founders": "Aravind Srinivas, Denis Yarats, Johnny Ho, Andy Konwinski",
+    "leadership": "",
+    "founding_details": "August 2022; 4 years ago ( August 2022 )",
+    "headquarters": "San Francisco, California, U.S.",
+    "business_model": "Freemium SaaS subscription model (Free vs Pro tiers) and B2B API enterprise licensing.",
+    "revenue_scale": "",
+    "executive_summary": "Perplexity is a free AI-powered answer engine that provides accurate, trusted, and real-time answers to any question."
+  },
+  "products": [
+    "Perplexity Free Answer Engine",
+    "Perplexity Pro Subscription",
+    "Perplexity Pages (Instant Research Reports)",
+    "Sonar LLM & API Search Services",
+    "Comet AI Web Browser",
+    "Perplexity Enterprise Pro Hub"
+  ],
+  "target_audience": [
+    "Knowledge Workers, Researchers & Market Analysts",
+    "Software Developers, Engineers & Technical Teams",
+    "Students, Academics & Educators",
+    "Founders, Executives & Productivity Enthusiasts",
+    "Enterprise Strategy & Intelligence Units"
+  ],
+  "audience_problems": [
+    "Traditional search engines overloaded with sponsored ads and SEO affiliate clutter",
+    "AI chat models hallucinating answers without verified, real-time web citations",
+    "Wasting hours opening and reading 10+ tabs to research complex multi-step questions",
+    "Lack of direct source attribution and footnote links in standard LLMs"
+  ],
+  "pain_points": [
+    "Traditional search engines overloaded with sponsored ads and SEO affiliate clutter",
+    "AI chat models hallucinating answers without verified, real-time web citations",
+    "Wasting hours opening and reading 10+ tabs to research complex multi-step questions",
+    "Lack of direct source attribution and footnote links in standard LLMs"
+  ],
+  "content_pillars": [
+    "1. AI Search vs Traditional Google Search head-to-head teardowns",
+    "2. Deep Academic & Market Research Workflows in Perplexity Pro",
+    "3. Benchmark Testing & Multi-Model Comparisons (Claude vs GPT-4o vs Sonar)",
+    "4. Future of Information Discovery, AI Agents & Web Browsing"
+  ],
+  "topics": [
+    "Real-time retrieval augmented generation (RAG)",
+    "Citation-backed answer synthesis",
+    "Multi-model reasoning and LLM benchmarks",
+    "Web research automation and structured reports"
+  ],
+  "keywords": [
+    "'Perplexity AI vs Google: which is better in 2026?'",
+    "'How to do 10x faster market research with Perplexity Pro'",
+    "'Perplexity Pages tutorial: create instant research documents'",
+    "'Why traditional search engines are dying (and how AI search fixes them)'",
+    "'Best AI search tools for developers and researchers'"
+  ],
+  "competitors": [
+    "Google Search & Gemini",
+    "OpenAI ChatGPT & SearchGPT",
+    "Microsoft Copilot / Bing",
+    "Anthropic Claude",
+    "Genspark AI",
+    "You.com"
+  ],
+  "creators": [],
+  "exclusions": [],
+  "languages": [
+    "en"
+  ],
+  "geographies": [
+    "Operating markets: Worldwide"
+  ],
+  "brand_positioning": "The conversational, citation-backed AI search and answer engine that delivers instant, verified knowledge with zero ad clutter.",
+  "tone_of_voice": "Intelligent, precise, curious, transparent, concise, and focused on cited evidence.",
+  "aspirations": [],
+  "goals": [],
+  "constraints": [],
+  "social_links": [],
+  "_viralyst_metadata": {
+    "source_system": "VIRALYST_Client_Brain_V1",
+    "evidence_health_score": 74.4,
+    "total_verified_facts": 32,
+    "grounded_facts": 29,
+    "conflicts_count": 3,
+    "verified_at": "2026-08-30T17:24:33.944771+00:00",
+    "generated_at": "2026-08-30T17:24:33",
+    "handoff_target": "https://github.com/Arjun-Chandra-7/YT-Searcher"
+  }
+}

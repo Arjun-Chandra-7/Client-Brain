@@ -88,9 +88,11 @@ class BrandAnalysisService:
         from app.services.verification_service import FactVerificationService
         verification_report = FactVerificationService(self.db).run_full_verification(client.id, check_live_urls=False, update_timestamps=True)
 
-        # 4. Build the structured YT-Searcher report / client.json
+        # 4. Build and auto-save the structured YT-Searcher report / client.json into "Client info"
         from app.services.export_service import YTExportService
-        yt_client_json = YTExportService(self.db).build_client_json(client.id)
+        export_service = YTExportService(self.db)
+        yt_client_json = export_service.export_and_save(client.id, output_dir="Client info")
+        saved_paths = yt_client_json.get("_viralyst_saved_paths", {})
 
         return {
             "client": client,
@@ -100,8 +102,9 @@ class BrandAnalysisService:
             "verification_report": verification_report.to_dict(),
             "evidence_health_score": round(verification_report.overall_health_score, 1),
             "yt_client_json": yt_client_json,
+            "saved_paths": saved_paths,
             "research_status": "completed" if extracted_count > 0 else "no_meaningful_information_extracted",
-            "research_message": "Client intelligence pulled and combined with web evidence. Structured YT-Searcher report ready." if extracted_count > 0 else "Client record created with provided information. (Web discovery had limited results).",
+            "research_message": f"Client intelligence pulled and saved to '{saved_paths.get('latest_file', 'Client info/client.json')}'. Structured YT-Searcher report ready." if extracted_count > 0 else "Client record created with provided information.",
             "profile_url": f"/clients/{client.id}/profile"
         }
 

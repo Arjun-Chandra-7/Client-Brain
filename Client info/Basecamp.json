@@ -1,0 +1,101 @@
+{
+  "client_id": "c7216282-a916-487a-abb6-beec9d06488d",
+  "business_name": "Basecamp",
+  "company_name": "Basecamp",
+  "client_name": "Basecamp",
+  "website": "https://basecamp.com",
+  "industry": "Productivity Software / Work Management SaaS",
+  "primary_niche": "Team Collaboration, Project Management & Productivity Software",
+  "subniches": [
+    "Task & Milestone Tracking",
+    "Centralized Team Communication",
+    "Remote Work Collaboration",
+    "Client Project Management"
+  ],
+  "company_overview": {
+    "legal_name": "Basecamp",
+    "founders": "",
+    "leadership": "",
+    "founding_details": "",
+    "headquarters": "",
+    "business_model": "Subscription-based Software-as-a-Service (SaaS) model with monthly/annual plans.",
+    "revenue_scale": "",
+    "executive_summary": "Trusted by millions, Basecamp puts everything you need to get work done in one place. It's the calm, organized way to manage projects, work with clients, and communicate company-wide."
+  },
+  "products": [
+    "Perplexity Free Answer Engine",
+    "Perplexity Pro Subscription",
+    "Perplexity Pages (Instant Research Reports)",
+    "Sonar LLM & API Search Services",
+    "Comet AI Web Browser",
+    "Perplexity Enterprise Pro Hub"
+  ],
+  "target_audience": [
+    "Small to Medium Business Teams",
+    "Remote & Distributed Organizations",
+    "Creative, Marketing, & Development Agencies",
+    "Freelancers and Independent Consultants"
+  ],
+  "audience_problems": [
+    "Traditional search engines overloaded with sponsored ads and SEO affiliate clutter",
+    "AI chat models hallucinating answers without verified, real-time web citations",
+    "Wasting hours opening and reading 10+ tabs to research complex multi-step questions",
+    "Lack of direct source attribution and footnote links in standard LLMs"
+  ],
+  "pain_points": [
+    "Traditional search engines overloaded with sponsored ads and SEO affiliate clutter",
+    "AI chat models hallucinating answers without verified, real-time web citations",
+    "Wasting hours opening and reading 10+ tabs to research complex multi-step questions",
+    "Lack of direct source attribution and footnote links in standard LLMs"
+  ],
+  "content_pillars": [
+    "1. Remote Work & Calm Company Culture philosophies",
+    "2. Project Organization & Workflow teardowns",
+    "3. Opinionated Software Design & Anti-Complexity",
+    "4. Customer Agency & Team Success Stories"
+  ],
+  "topics": [
+    "Remote collaboration",
+    "Bootstrapping & sustainable business",
+    "Calm work practices",
+    "Productivity design"
+  ],
+  "keywords": [
+    "'Why your team feels overwhelmed (and how to fix your tools)'",
+    "'The real cost of app sprawl in 2026'",
+    "'How we run projects without daily status meetings'"
+  ],
+  "competitors": [
+    "Google Search & Gemini",
+    "OpenAI ChatGPT & SearchGPT",
+    "Microsoft Copilot / Bing",
+    "Anthropic Claude",
+    "Genspark AI",
+    "You.com"
+  ],
+  "creators": [],
+  "exclusions": [],
+  "languages": [
+    "en"
+  ],
+  "geographies": [
+    "Global",
+    "US"
+  ],
+  "brand_positioning": "The conversational, citation-backed AI search and answer engine that delivers instant, verified knowledge with zero ad clutter.",
+  "tone_of_voice": "Intelligent, precise, curious, transparent, concise, and focused on cited evidence.",
+  "aspirations": [],
+  "goals": [],
+  "constraints": [],
+  "social_links": [],
+  "_viralyst_metadata": {
+    "source_system": "VIRALYST_Client_Brain_V1",
+    "evidence_health_score": 65.4,
+    "total_verified_facts": 74,
+    "grounded_facts": 56,
+    "conflicts_count": 17,
+    "verified_at": "2026-08-30T17:24:56.858528+00:00",
+    "generated_at": "2026-08-30T17:24:56",
+    "handoff_target": "https://github.com/Arjun-Chandra-7/YT-Searcher"
+  }
+}

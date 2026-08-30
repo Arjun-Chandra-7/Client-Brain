@@ -1,0 +1,97 @@
+{
+  "client_id": "c79ad880-e83a-4c02-952f-c14fed227b77",
+  "business_name": "Starbucks",
+  "company_name": "Starbucks Corporation",
+  "client_name": "Starbucks",
+  "website": "starbucks.com",
+  "industry": "Specialty Coffee, Food & Beverage Retail, Hospitality",
+  "primary_niche": "Specialty Coffeehouse & Cafe Experience",
+  "subniches": [
+    "Handcrafted Espresso & Cold Brew",
+    "Specialty Teas & Refreshers",
+    "Artisanal Bakery & Breakfast Food",
+    "At-Home Packaged Coffee"
+  ],
+  "company_overview": {
+    "legal_name": "Starbucks Corporation",
+    "founders": "Jerry Baldwin Zev Siegl Gordon Bowker",
+    "leadership": "Howard Schultz (chairman emeritus) Brian Niccol (chairman and CEO)",
+    "founding_details": "March 30, 1971; 55 years ago ( 1971-03-30 ), in Pike Place Market, Elliott Bay, Seattle, Washington, U.S.",
+    "headquarters": "Starbucks Center, Seattle, U.S.",
+    "business_model": "Company-owned retail locations, licensed partner stores, consumer packaged goods distribution, and mobile ordering.",
+    "revenue_scale": "Revenue scale: US$37.18 billion (2025)",
+    "executive_summary": "Starbucks Corporation is an American multinational chain of coffeehouses and roastery reserves headquartered in Seattle, Washington. It was founded in 1971 by Jerry Baldwin, Zev Siegl, and Gordon Bowker at Seattle's Pike Place Market initially as a coffee bean wholesaler. Starbucks was converted into a coffee shop serving espresso -based drinks under the ownership of Howard Schultz, who was chief executive officer from 1986 to 2000 and led the aggressive expansion of the franchise across the Wes"
+  },
+  "products": [
+    "Espresso & Caffe Latte / Americano",
+    "Frappuccino Blended Beverages",
+    "Cold Brew & Nitro Cold Brew",
+    "Starbucks Refreshers & Iced Teas",
+    "Warm Breakfast Sandwiches & Pastries",
+    "Starbucks At Home Whole Bean & Ground Coffee"
+  ],
+  "target_audience": [
+    "Daily Morning Commuters & Habitual Coffee Drinkers",
+    "Working Professionals & Students seeking workspace/wifi",
+    "Custom Beverage & Specialty Drink Enthusiasts",
+    "On-the-go Mobile App & Drive-Thru Convenience Seekers"
+  ],
+  "audience_problems": [
+    "Lack of time during busy morning rush",
+    "Inconsistent coffee quality at generic fast-food chains",
+    "Need for comfortable public workspace with reliable internet and seating"
+  ],
+  "pain_points": [
+    "Lack of time during busy morning rush",
+    "Inconsistent coffee quality at generic fast-food chains",
+    "Need for comfortable public workspace with reliable internet and seating"
+  ],
+  "content_pillars": [
+    "1. Beverage Customization & 'Secret Menu' creations",
+    "2. Seasonal Menu Excitement & Anticipation campaigns",
+    "3. Behind-the-Bar Barista Craft & Coffee Origin storytelling",
+    "4. Customer Community Moments & 'Third Place' lifestyle"
+  ],
+  "topics": [
+    "Espresso extraction & coffee bean origins",
+    "Ethical sourcing (C.A.F.E. Practices)",
+    "Cafe culture & hospitality",
+    "Custom drink creation & mixology"
+  ],
+  "keywords": [
+    "'What your go-to Starbucks order reveals about your day'",
+    "'How to customize your iced espresso for the perfect midday lift'",
+    "'From high-elevation farms to your morning cup: the journey of our roast'"
+  ],
+  "competitors": [
+    "Dunkin'",
+    "Costa Coffee",
+    "Peet's Coffee",
+    "Tim Hortons",
+    "McCafé (McDonald's)"
+  ],
+  "creators": [],
+  "exclusions": [],
+  "languages": [
+    "en"
+  ],
+  "geographies": [
+    "Operating markets: 87 countries"
+  ],
+  "brand_positioning": "'The Third Place' - a welcoming, uplifting environment between work and home dedicated to human connection and coffee craft.",
+  "tone_of_voice": "Inviting, sensory, passionate about quality and craft, socially responsible, and conversational.",
+  "aspirations": [],
+  "goals": [],
+  "constraints": [],
+  "social_links": [],
+  "_viralyst_metadata": {
+    "source_system": "VIRALYST_Client_Brain_V1",
+    "evidence_health_score": 70.0,
+    "total_verified_facts": 30,
+    "grounded_facts": 25,
+    "conflicts_count": 2,
+    "verified_at": "2026-08-30T17:24:53.581430+00:00",
+    "generated_at": "2026-08-30T17:24:50",
+    "handoff_target": "https://github.com/Arjun-Chandra-7/YT-Searcher"
+  }
+}
